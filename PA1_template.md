@@ -7,7 +7,8 @@ output: html_document
 
 ## Loading and preprocessing the data
 
-```{r loadData,echo=TRUE}
+
+```r
 if(!file.exists("./activity.csv")){
         unzip("./activity.zip")
 }
@@ -16,7 +17,8 @@ activitydata<-read.csv("activity.csv")
 
 ## What is mean total number of steps taken per day?
 
-```{r stepsTakenPerDay,echo=TRUE}
+
+```r
 #Calculate the total number of steps taken per day
 stepsByDate<-aggregate(steps ~ date, activitydata, sum)
 
@@ -29,27 +31,53 @@ histogram(
         , main = "total number of steps taken each day"
         ,col=rainbow(30)
 )
+```
 
+![plot of chunk stepsTakenPerDay](figure/stepsTakenPerDay-1.png) 
+
+```r
 #Calculate and report the mean and median of the total number of steps taken per day
 summary(stepsByDate$steps)
 ```
 
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    8841   10760   10770   13290   21190
+```
+
 ## What is the average daily activity pattern?
-```{r, daylyPattern, echo=TRUE}
+
+```r
 #Calculate the average number of steps taken per interval
 averageStepsByInterval<-aggregate(steps ~ interval, activitydata, mean)
 plot(averageStepsByInterval, type = "l",main="average daily activity pattern")
+```
 
+![plot of chunk daylyPattern](figure/daylyPattern-1.png) 
+
+```r
 #Get max of the average number of steps taken per interval
 averageStepsByInterval[averageStepsByInterval$steps == max(averageStepsByInterval$steps),]
-````
+```
+
+```
+##     interval    steps
+## 104      835 206.1698
+```
 
 
 ## Imputing missing values
-```{r inputMissingValues,echo=TRUE}
+
+```r
 #Calculate and report the total number of missing values in the dataset
 nrow(activitydata[is.na(activitydata),])
+```
 
+```
+## [1] 2304
+```
+
+```r
 #Replace missing NA's with mean value by interval
 suppressWarnings(library(plyr))
 impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
@@ -66,14 +94,24 @@ histogram(
         , main = "total number of steps taken each day"
         ,col=rainbow(7)
 )
+```
 
+![plot of chunk inputMissingValues](figure/inputMissingValues-1.png) 
+
+```r
 #Calculate and report the mean and median of the total number of steps taken per day
 summary(stepsByDate$steps)
 ```
 
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10770   10770   12810   21190
+```
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r differencesInActivityPatterns,echo=TRUE}
+
+```r
 #Add factor variable in the dataset with two levels – “weekday” and “weekend”
 activitydata2$daytype<-factor(
         mapvalues(
@@ -106,4 +144,6 @@ plot(
         ,ylim=c(0,300)
 )
 ```
+
+![plot of chunk differencesInActivityPatterns](figure/differencesInActivityPatterns-1.png) 
 
